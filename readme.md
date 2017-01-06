@@ -35,3 +35,5 @@ QUEUE_DRIVER=sync
 #### Downloading a file
 1. Open your browser
 2. Go to `http://localhost:8000/upload?filename=yourfile.png` 
+
+Thank you for reviewing!

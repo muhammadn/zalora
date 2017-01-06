@@ -36,4 +36,7 @@ QUEUE_DRIVER=sync
 1. Open your browser
 2. Go to `http://localhost:8000/upload?filename=yourfile.png` 
 
+##### Note!
+The API will check if the file exists (using checksums) and if it exists it will reject the file.
+
 Thank you for reviewing!

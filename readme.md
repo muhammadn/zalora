@@ -1,21 +1,35 @@
-# Lumen PHP Framework
+# Simple file upload/delete/download API for Zalora
 
-[![Build Status](https://travis-ci.org/laravel/lumen-framework.svg)](https://travis-ci.org/laravel/lumen-framework)
-[![Total Downloads](https://poser.pugx.org/laravel/lumen-framework/d/total.svg)](https://packagist.org/packages/laravel/lumen-framework)
-[![Latest Stable Version](https://poser.pugx.org/laravel/lumen-framework/v/stable.svg)](https://packagist.org/packages/laravel/lumen-framework)
-[![Latest Unstable Version](https://poser.pugx.org/laravel/lumen-framework/v/unstable.svg)](https://packagist.org/packages/laravel/lumen-framework)
-[![License](https://poser.pugx.org/laravel/lumen-framework/license.svg)](https://packagist.org/packages/laravel/lumen-framework)
+I am using Lumen PHP framework for this test to write an API using this micro-framework
 
-Laravel Lumen is a stunningly fast PHP micro-framework for building web applications with expressive, elegant syntax. We believe development must be an enjoyable, creative experience to be truly fulfilling. Lumen attempts to take the pain out of development by easing common tasks used in the majority of web projects, such as routing, database abstraction, queueing, and caching.
+## Installation
+* `composer install`
+* `cp .env.example .env`
+* `touch database/database.sqlite`
 
-## Official Documentation
+### Edit .env file like below
+```
+APP_ENV=local
+APP_DEBUG=true
+APP_KEY=changeMeToArandomSecret
+APP_TIMEZONE=UTC
 
-Documentation for the framework can be found on the [Lumen website](http://lumen.laravel.com/docs).
+DB_CONNECTION=sqlite
 
-## Security Vulnerabilities
+CACHE_DRIVER=memcached
+QUEUE_DRIVER=sync
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell at taylor@laravel.com. All security vulnerabilities will be promptly addressed.
+```
 
-## License
+### Now the FUN begins!
+* Run the API from localhost with `php -S localhost:8000 -t public` in this project's root folder
 
-The Lumen framework is open-sourced software licensed under the [MIT license](http://opensource.org/licenses/MIT)
+#### Uploading a file
+* `curl -X POST  -F "data=@/Users/me/Downloads/yourfile.png" http://localhost:8000/upload`
+
+#### Deleting a file
+* `curl -X DELETE http://localhost:8000/upload\?filename\=yourfile.png`
+
+#### Downloading a file
+1. Open your browser
+2. Go to `http://localhost:8000/upload?filename=yourfile.png` 

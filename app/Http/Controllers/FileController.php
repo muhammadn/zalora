@@ -40,32 +40,34 @@ class FileController extends Controller
     public function delete(Request $request){
       $filename = $request->filename;
       $find_file = DB::table('files')->where('filename', '=', $filename)->first();
-      if (!$find_file){
-        return response()->json(['status' => 'file not found']);
+      if (!empty($find_file)){
+        $hashed_filename = $find_file->hashed_filename;
+        $exists = Storage::disk('local')->exists($hashed_filename);
+        if ($exists){
+          Storage::disk('local')->delete($hashed_filename);
+          DB::table('files')->where('filename', '=', $filename)->delete();
+          return response()->json(['status' => 'successfully deleted file']);
+        }
+      } else {
+          return response()->json(['status' => 'file not found']);
       }
-      $hashed_filename = $find_file->hashed_filename;
-      $exists = Storage::disk('local')->exists($hashed_filename);
-      if ($exists){
-        Storage::disk('local')->delete($hashed_filename);
-        DB::table('files')->where('filename', '=', $filename)->delete();
-        return response()->json(['status' => 'successfully deleted file']);
-      } 
     }
 
     public function show(Request $request){
       $filename = $request->filename;
       $find_file = DB::table('files')->where('filename', '=', $filename)->first();
-      if (!$find_file){ // checks if the file is added into the filesystem
-        return response()->json(['status' => 'file not found']);
-      } 
-      $hashed_filename = $find_file->hashed_filename;
-      $exists = Storage::disk('local')->exists($hashed_filename);
-      if ($exists){
-        $file = Storage::disk('local')->getDriver()->getAdapter()->applyPathPrefix($hashed_filename);
-        $headers = array(
-          'Content-Type' => ['image/jpeg', 'image/png']
-        );
-        return response()->download($file, $filename, $headers);
-      } 
+      if(!empty($find_file)){
+        $hashed_filename = $find_file->hashed_filename;
+        $exists = Storage::disk('local')->exists($hashed_filename);
+        if ($exists){
+          $file = Storage::disk('local')->getDriver()->getAdapter()->applyPathPrefix($hashed_filename);
+          $headers = array(
+            'Content-Type' => ['image/jpeg', 'image/png']
+          );
+          return response()->download($file, $filename, $headers);
+        } 
+      } else {
+         return response()->json(['status' => 'file not found']);
+      }
     }
 }

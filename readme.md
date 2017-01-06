@@ -20,6 +20,8 @@ CACHE_DRIVER=memcached
 QUEUE_DRIVER=sync
 
 ```
+### Run database migrations
+* Run `php artisan migrate` at the project root folder.
 
 ### Now the FUN begins!
 * Run the API from localhost with `php -S localhost:8000 -t public` in this project's root folder

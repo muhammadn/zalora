@@ -62,7 +62,7 @@ class FileController extends Controller
         if ($exists){
           $file = Storage::disk('local')->getDriver()->getAdapter()->applyPathPrefix($hashed_filename);
           $headers = array(
-            'Content-Type' => ['image/jpeg', 'image/png']
+            'Content-Type' => ['*/*']
           );
           return response()->download($file, $filename, $headers);
         } 

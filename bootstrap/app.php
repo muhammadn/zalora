@@ -107,7 +107,8 @@ config([
         'disks' => [
             'local' => [
                 'driver' => 'local',
-                'root' => storage_path('app'),
+                'root' => '/tmp/zalora/storage/app',
+                // 'root' => storage_path('app'),
             ],
         ],
     ],

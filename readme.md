@@ -3,12 +3,11 @@
 I am using Lumen PHP framework for this test to write an API using this micro-framework
 
 ## Installation
-1. `cp .env.sqlite .env`
+1. `cp .env.sqlite .env` 
 2. `composer install`
 3.  `mkdir -p /tmp/zalora/storage/app /tmp/zalora/storage/framework/cache /tmp/zalora/storage/framework/views /tmp/zalora/storage/logs /tmp/zalora/database`
 5. `touch /tmp/zalora/database/database.sqlite`
-6.  `chmod 755 /tmp/zalora/database /tmp/zalora/storage`
-7.  `chmod 777 /tmp/zalora/storage/logs /tmp/zalora/storage/app /tmp/zalora/storage/framework /tmp/zalora/storage/framework/cache /tmp/zalora/database/database.sqlite`
+6.  `chmod 777 /tmp/zalora/database /tmp/zalora/storage /tmp/zalora/storage/logs /tmp/zalora/storage/app /tmp/zalora/storage/framework /tmp/zalora/storage/framework/cache /tmp/zalora/database/database.sqlite`
 
 ### Run database migrations
 * Run `php artisan migrate` at the project root folder.

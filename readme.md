@@ -4,22 +4,12 @@ I am using Lumen PHP framework for this test to write an API using this micro-fr
 
 ## Installation
 * `composer install`
-* `cp .env.example .env`
+* `cp .env.sqlite .env`
+* `chmod 777 /tmp/zalora/storage /tmp/zalora/storage/logs /tmp/zalora/storage/app /tmp/zalora/storage/framework /tmp/zalora/storage/framework/cache`
+* `mkdir -p /tmp/zalora/storage/app /tmp/zalora/storage/framework/cache /tmp/zalora/storage/framework/views /tmp/zalora/storage/logs /tmp/zalora/database`
+* `touch /tmp/zalora/database/database.sqlite`
 * `touch database/database.sqlite`
 
-### Edit .env file like below
-```
-APP_ENV=local
-APP_DEBUG=true
-APP_KEY=changeMeToArandomSecret
-APP_TIMEZONE=UTC
-
-DB_CONNECTION=sqlite
-
-CACHE_DRIVER=memcached
-QUEUE_DRIVER=sync
-
-```
 ### Run database migrations
 * Run `php artisan migrate` at the project root folder.
 

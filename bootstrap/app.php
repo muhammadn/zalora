@@ -100,6 +100,15 @@ $app->group(['namespace' => 'App\Http\Controllers'], function ($app) {
     require __DIR__.'/../routes/web.php';
 });
 
+$logFile = "/tmp/zalora/storage/logs/lumen.log";
+
+$app->configureMonologUsing(function(Monolog\Logger $monolog) use($logFile){
+  $handler = (new \Monolog\Handler\StreamHandler($logFile))
+    ->setFormatter(new \Monolog\Formatter\LineFormatter(null, null, true, true));
+  return $monolog->pushHandler($handler);
+
+});
+
 /* Storage  */
 config([
     "filesystems" => [
@@ -113,5 +122,5 @@ config([
         ],
     ],
 ]); 
- 
+
 return $app;

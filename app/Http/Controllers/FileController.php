@@ -22,10 +22,10 @@ class FileController extends Controller
       if ($request->hasFile('data')) {
         $file = $request->file('data');
         $filename = $file->getClientOriginalName(); // this will be store in database to check against a checksummed file.
-        $extension = $file->guessClientExtension(); // check the file type
+        $find_file = DB::table('files')->where('filename', '=', $filename)->first();
         $file_checksum = md5_file($file); // checksum of the file
-        $exists = Storage::disk('local')->exists($file_checksum); // check if the there are identical checksummed files
-        if ($exists){
+        $data = Storage::disk('local')->exists($file_checksum); // check if the there are identical checksummed files
+        if ($data || $find_file){
           return response()->json(['status' => 'file exists']);
         } else {
           DB::table('files')->insert([

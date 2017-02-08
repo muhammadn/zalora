@@ -19,55 +19,59 @@ class FileController extends Controller
     }
 
     public function create(Request $request){
-      if ($request->hasFile('data')) {
-        $file = $request->file('data');
-        $filename = $file->getClientOriginalName(); // this will be store in database to check against a checksummed file.
-        $find_file = DB::table('files')->where('filename', '=', $filename)->first();
-        $file_checksum = md5_file($file); // checksum of the file
-        $data = Storage::disk('local')->exists($file_checksum); // check if the there are identical checksummed files
-        if ($data || $find_file){
-          return response()->json(['status' => 'file exists']);
-        } else {
-          DB::table('files')->insert([
-            ['hashed_filename' => $file_checksum, 'filename' => $filename ]
-          ]);
-          Storage::disk('local')->put($file_checksum, File::get($file));
-          return response()->json(['status' => 'success']);
+        if ($request->hasFile('data')) {
+            $file = $request->file('data');
+            $filename = $file->getClientOriginalName(); // get the filename of the uploaded file.
+            $find_file = DB::table('files')->where('filename', '=', $filename)->first(); // check if filename exists in database
+            $file_checksum = md5_file($file); // checksum of the file
+            $data = Storage::disk('local')->exists($file_checksum); // check if the there are identical checksummed files
+            /*
+             * Below code checks if the checksum of the uploaded file is available in storage or
+             * if the filename exists in the database and rejects the upload. Else, add the file
+             */
+            if ($data || $find_file){ 
+                return response()->json(['status' => 'file exists']);
+            } else {
+                DB::table('files')->insert([
+                ['hashed_filename' => $file_checksum, 'filename' => $filename ]
+            ]);
+                Storage::disk('local')->put($file_checksum, File::get($file));
+                return response()->json(['status' => 'success']);
+            }
         }
-      }
-    }
+    }       
 
     public function delete(Request $request){
-      $filename = $request->filename;
-      $find_file = DB::table('files')->where('filename', '=', $filename)->first();
-      if (!empty($find_file)){
-        $hashed_filename = $find_file->hashed_filename;
-        $exists = Storage::disk('local')->exists($hashed_filename);
-        if ($exists){
-          Storage::disk('local')->delete($hashed_filename);
-          DB::table('files')->where('filename', '=', $filename)->delete();
-          return response()->json(['status' => 'successfully deleted file']);
+        $filename = $request->filename;
+        $find_file = DB::table('files')->where('filename', '=', $filename)->first();
+        if (!empty($find_file)){
+            $hashed_filename = $find_file->hashed_filename;
+            $exists = Storage::disk('local')->exists($hashed_filename);
+            if ($exists){
+                Storage::disk('local')->delete($hashed_filename);
+                DB::table('files')->where('filename', '=', $filename)->delete();
+                return response()->json(['status' => 'successfully deleted file']);
+            }
+         } else {
+             return response()->json(['status' => 'file not found']);
         }
-      } else {
-          return response()->json(['status' => 'file not found']);
-      }
     }
 
     public function show(Request $request){
-      $filename = $request->filename;
-      $find_file = DB::table('files')->where('filename', '=', $filename)->first();
-      if(!empty($find_file)){
-        $hashed_filename = $find_file->hashed_filename;
-        $exists = Storage::disk('local')->exists($hashed_filename);
-        if ($exists){
-          $file = Storage::disk('local')->getDriver()->getAdapter()->applyPathPrefix($hashed_filename);
-          $headers = array(
-            'Content-Type' => ['*/*']
-          );
-          return response()->download($file, $filename, $headers);
-        } 
-      } else {
-         return response()->json(['status' => 'file not found']);
-      }
+        $filename = $request->filename;
+        $find_file = DB::table('files')->where('filename', '=', $filename)->first();
+        if(!empty($find_file)){
+            $hashed_filename = $find_file->hashed_filename;
+            $exists = Storage::disk('local')->exists($hashed_filename);
+            if ($exists){
+                $file = Storage::disk('local')->getDriver()->getAdapter()->applyPathPrefix($hashed_filename);
+                $headers = array(
+                    'Content-Type' => ['*/*']
+                );
+                return response()->download($file, $filename, $headers);
+            } 
+        } else {
+            return response()->json(['status' => 'file not found']);
+        }
     }
 }
